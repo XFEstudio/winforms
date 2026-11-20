@@ -116,7 +116,15 @@ jobs:
           git restore --source=$env:BASE_COMMIT -- $env:PRODUCTION_PATH
           if ($LASTEXITCODE -ne 0) { throw 'Could not restore the production baseline.' }
           git diff -- $env:PRODUCTION_PATH | Out-File "$env:VALIDATION_ROOT\red-production.diff"
-          & .\build.cmd -ci -projects $env:TEST_PROJECT -configuration Debug -platform x64 /p:TargetArchitecture=x64 "/bl:$env:VALIDATION_ROOT\red-build.binlog" 2>&1 |
+          & .\build.cmd -ci -projects 'src/test/unit/.NET Framework/UnsupportedTypes/UnsupportedTypes.csproj' -configuration Debug /p:TargetArchitecture=x64 "/bl:$env:VALIDATION_ROOT\test-assets-build.binlog" 2>&1 |
+            Tee-Object -FilePath "$env:VALIDATION_ROOT\test-assets-build.log" | Out-Host
+          $assetBuildExit = $LASTEXITCODE
+          Set-Content "$env:VALIDATION_ROOT\test-assets-build-exit.txt" $assetBuildExit
+          if ($assetBuildExit -ne 0) { throw "Official UnsupportedTypes test-asset build failed (exit $assetBuildExit)." }
+          if (-not (Test-Path -LiteralPath 'artifacts/bin/UnsupportedTypes/Debug/net481/UnsupportedTypes.dll')) {
+            throw 'The original UnsupportedTypes HintPath asset was not produced.'
+          }
+          & .\build.cmd -ci -projects $env:TEST_PROJECT -configuration Debug /p:TargetArchitecture=x64 "/bl:$env:VALIDATION_ROOT\red-build.binlog" 2>&1 |
             Tee-Object -FilePath "$env:VALIDATION_ROOT\red-build.log" | Out-Host
           $buildExit = $LASTEXITCODE
           Set-Content "$env:VALIDATION_ROOT\red-build-exit.txt" $buildExit
@@ -144,7 +152,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Could not restore the candidate production fix.' }
           git diff --exit-code -- $env:PRODUCTION_PATH
           if ($LASTEXITCODE -ne 0) { throw 'Production file does not match the candidate commit.' }
-          & .\build.cmd -ci -projects $env:TEST_PROJECT -configuration Debug -platform x64 /p:TargetArchitecture=x64 "/bl:$env:VALIDATION_ROOT\green-build.binlog" 2>&1 |
+          & .\build.cmd -ci -projects $env:TEST_PROJECT -configuration Debug /p:TargetArchitecture=x64 "/bl:$env:VALIDATION_ROOT\green-build.binlog" 2>&1 |
             Tee-Object -FilePath "$env:VALIDATION_ROOT\green-build.log" | Out-Host
           $buildExit = $LASTEXITCODE
           Set-Content "$env:VALIDATION_ROOT\green-build-exit.txt" $buildExit
