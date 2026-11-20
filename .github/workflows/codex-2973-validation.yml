@@ -1,0 +1,184 @@
+name: Validate WinForms 2973 red and green
+
+on:
+  push:
+    branches:
+      - validation/2973-toolstrippanel-nov20
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: windows-2025-vs2026
+    timeout-minutes: 120
+    defaults:
+      run:
+        shell: pwsh
+    env:
+      BASE_COMMIT: 74c34c0972f7b5b0a761da6a0069f00d90fe9c6f
+      PRODUCTION_PATH: src/System.Windows.Forms/System/Windows/Forms/Controls/ToolStrips/ToolStripPanel.ToolStripPanelControlCollection.cs
+      TEST_PROJECT: src/test/unit/System.Windows.Forms/System.Windows.Forms.Tests.csproj
+      TEST_SOURCE: src/test/unit/System.Windows.Forms/System/Windows/Forms/ToolStripPanelTests.cs
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      TESTINGPLATFORM_TELEMETRY_OPTOUT: 1
+
+    steps:
+      - name: Configure Git before checkout
+        run: |
+          git config --global core.autocrlf false
+          if ($LASTEXITCODE -ne 0) { throw 'Could not configure Git line endings.' }
+          git config --global core.longpaths true
+          if ($LASTEXITCODE -ne 0) { throw 'Could not configure Git long paths.' }
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+
+      - name: Prepare result checks
+        run: |
+          if ($env:GITHUB_REF -ne 'refs/heads/validation/2973-toolstrippanel-nov20') {
+            throw 'This workflow is restricted to its isolated validation branch.'
+          }
+          $resultRoot = Join-Path $env:GITHUB_WORKSPACE 'validation-results'
+          New-Item -ItemType Directory -Path $resultRoot -Force | Out-Null
+          "VALIDATION_ROOT=$resultRoot" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          "DOTNET_ROOT=$env:GITHUB_WORKSPACE\.dotnet" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          "DOTNET_ROOT_X64=$env:GITHUB_WORKSPACE\.dotnet" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          git rev-parse HEAD | Out-File "$resultRoot\commit.txt" -Encoding utf8
+          git status --short | Out-File "$resultRoot\initial-status.txt" -Encoding utf8
+          Get-FileHash $env:TEST_SOURCE -Algorithm SHA256 | Format-List | Out-File "$resultRoot\test-source-sha256.txt"
+          @'
+          function Find-TestExecutable {
+              $candidates = @(Get-ChildItem -LiteralPath 'artifacts/bin/System.Windows.Forms.Tests' -Recurse -File -Filter 'System.Windows.Forms.Tests.exe' |
+                  Where-Object { $_.FullName -match '[\\/]Debug[\\/]' })
+              if ($candidates.Count -ne 1) {
+                  throw "Expected one original test executable; found $($candidates.Count)."
+              }
+              return $candidates[0].FullName
+          }
+
+          function Invoke-CheckedTests {
+              param([string] $Name, [string[]] $Filters, [switch] $ExpectFiveFailures)
+              $PSNativeCommandUseErrorActionPreference = $false
+              $exe = Find-TestExecutable
+              $directory = Join-Path $env:VALIDATION_ROOT $Name
+              New-Item -ItemType Directory -Path $directory -Force | Out-Null
+              $arguments = @('--parallel', 'none', '--results-directory', $directory, '--report-trx', '--report-trx-filename', "$Name.trx") + $Filters
+              & $exe @arguments 2>&1 | Tee-Object -FilePath "$directory\console.log" | Out-Host
+              $testExit = $LASTEXITCODE
+              Set-Content -LiteralPath "$directory\exit-code.txt" -Value $testExit
+              $trxPath = Join-Path $directory "$Name.trx"
+              if (-not (Test-Path -LiteralPath $trxPath)) { throw "No TRX report was produced by $Name (exit $testExit)." }
+              [xml] $trx = Get-Content -LiteralPath $trxPath -Raw
+              $counters = $trx.SelectSingleNode("/*[local-name()='TestRun']/*[local-name()='ResultSummary']/*[local-name()='Counters']")
+              if ($null -eq $counters) { throw "No test counters in $trxPath." }
+              $total = [int] $counters.GetAttribute('total')
+              $executed = [int] $counters.GetAttribute('executed')
+              $passed = [int] $counters.GetAttribute('passed')
+              $failed = [int] $counters.GetAttribute('failed')
+              $results = @($trx.SelectNodes("//*[local-name()='UnitTestResult']"))
+              $productionAssembly = Join-Path (Split-Path $exe) 'System.Windows.Forms.dll'
+              $record = [ordered]@{
+                  name = $Name; exitCode = $testExit; total = $total; executed = $executed
+                  passed = $passed; failed = $failed; resultCount = $results.Count
+                  executable = $exe; productionSha256 = (Get-FileHash $productionAssembly -Algorithm SHA256).Hash
+              }
+              $record | ConvertTo-Json | Set-Content -LiteralPath "$directory\summary.json"
+              "| $Name | $testExit | $executed | $passed | $failed |" | Out-File $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+              if ($executed -le 0 -or $total -ne $executed -or $results.Count -ne $executed) {
+                  throw "$Name did not execute every selected test: total=$total executed=$executed results=$($results.Count)."
+              }
+              if ($ExpectFiveFailures) {
+                  if ($testExit -eq 0 -or $executed -ne 5 -or $failed -ne 5 -or $passed -ne 0) {
+                      throw "Expected exactly five RED failures; got exit=$testExit executed=$executed failed=$failed passed=$passed."
+                  }
+                  foreach ($result in $results) {
+                      if ($result.GetAttribute('outcome') -ne 'Failed' -or $result.OuterXml -notmatch 'NullReferenceException') {
+                          throw "RED did not fail with the expected NullReferenceException: $($result.GetAttribute('testName'))."
+                      }
+                  }
+              }
+              elseif ($testExit -ne 0 -or $failed -ne 0 -or $passed -ne $executed) {
+                  throw "$Name failed: exit=$testExit executed=$executed failed=$failed passed=$passed."
+              }
+              $global:LASTEXITCODE = 0
+          }
+          '@ | Set-Content -LiteralPath "$resultRoot\TestChecks.ps1" -Encoding utf8
+          @('| Phase | Exit | Executed | Passed | Failed |', '| --- | ---: | ---: | ---: | ---: |') |
+            Out-File $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+
+      - name: Build original test project against unmodified production
+        run: |
+          $PSNativeCommandUseErrorActionPreference = $false
+          git restore --source=$env:BASE_COMMIT -- $env:PRODUCTION_PATH
+          if ($LASTEXITCODE -ne 0) { throw 'Could not restore the production baseline.' }
+          git diff -- $env:PRODUCTION_PATH | Out-File "$env:VALIDATION_ROOT\red-production.diff"
+          & .\build.cmd -ci -projects $env:TEST_PROJECT -configuration Debug -platform x64 /p:TargetArchitecture=x64 "/bl:$env:VALIDATION_ROOT\red-build.binlog" 2>&1 |
+            Tee-Object -FilePath "$env:VALIDATION_ROOT\red-build.log" | Out-Host
+          $buildExit = $LASTEXITCODE
+          Set-Content "$env:VALIDATION_ROOT\red-build-exit.txt" $buildExit
+          if ($buildExit -ne 0) { throw "Official baseline test-project build failed (exit $buildExit)." }
+
+      - name: Require the five original bug failures
+        run: |
+          . "$env:VALIDATION_ROOT\TestChecks.ps1"
+          $exe = Find-TestExecutable
+          & $exe --help 2>&1 | Tee-Object -FilePath "$env:VALIDATION_ROOT\test-runner-help.log" | Out-Host
+          if ($LASTEXITCODE -ne 0) { throw 'Original test runner --help failed.' }
+          $methods = @(
+            '--filter-method',
+            'System.Windows.Forms.Tests.ToolStripPanelTests.ToolStripPanel_Controls_AddDropDown_ThrowsArgumentException',
+            'System.Windows.Forms.Tests.ToolStripPanelTests.ToolStripPanel_Controls_AddDropDownWithParent_PreservesCollections',
+            'System.Windows.Forms.Tests.ToolStripPanelTests.ToolStripPanel_Join_DropDown_ThrowsArgumentException'
+          )
+          Invoke-CheckedTests -Name red -Filters $methods -ExpectFiveFailures
+          exit 0
+
+      - name: Restore fix and rebuild the original test project
+        run: |
+          $PSNativeCommandUseErrorActionPreference = $false
+          git restore --source=$env:GITHUB_SHA -- $env:PRODUCTION_PATH
+          if ($LASTEXITCODE -ne 0) { throw 'Could not restore the candidate production fix.' }
+          git diff --exit-code -- $env:PRODUCTION_PATH
+          if ($LASTEXITCODE -ne 0) { throw 'Production file does not match the candidate commit.' }
+          & .\build.cmd -ci -projects $env:TEST_PROJECT -configuration Debug -platform x64 /p:TargetArchitecture=x64 "/bl:$env:VALIDATION_ROOT\green-build.binlog" 2>&1 |
+            Tee-Object -FilePath "$env:VALIDATION_ROOT\green-build.log" | Out-Host
+          $buildExit = $LASTEXITCODE
+          Set-Content "$env:VALIDATION_ROOT\green-build-exit.txt" $buildExit
+          if ($buildExit -ne 0) { throw "Official candidate test-project build failed (exit $buildExit)." }
+
+      - name: Require all four original test classes to pass
+        run: |
+          . "$env:VALIDATION_ROOT\TestChecks.ps1"
+          $classes = @(
+            'System.Windows.Forms.Tests.ToolStripPanelTests',
+            'System.Windows.Forms.Tests.TypedControlCollectionTests',
+            'System.Windows.Forms.Tests.ReadOnlyControlCollectionTests',
+            'System.Windows.Forms.Tests.ToolStripContainer_ToolStripContainerTypedControlCollectionTests'
+          )
+          foreach ($class in $classes) {
+            $name = 'green-' + ($class -replace '^System.Windows.Forms.Tests\.', '')
+            Invoke-CheckedTests -Name $name -Filters @('--filter-class', $class)
+          }
+          $red = Get-Content "$env:VALIDATION_ROOT\red\summary.json" -Raw | ConvertFrom-Json
+          $green = Get-Content "$env:VALIDATION_ROOT\green-ToolStripPanelTests\summary.json" -Raw | ConvertFrom-Json
+          if ($red.productionSha256 -eq $green.productionSha256) { throw 'RED and GREEN loaded identical production assembly bytes.' }
+          Get-FileHash $env:TEST_SOURCE -Algorithm SHA256 | Format-List | Out-File "$env:VALIDATION_ROOT\final-test-source-sha256.txt"
+          git status --short | Out-File "$env:VALIDATION_ROOT\final-status.txt"
+          exit 0
+
+      - name: Upload build logs and test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: winforms-2973-red-green-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            validation-results/**
+            artifacts/log/**/*.binlog
+            artifacts/log/**/*.log
+            artifacts/TestResults/**
