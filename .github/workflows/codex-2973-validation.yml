@@ -116,7 +116,7 @@ jobs:
           git restore --source=$env:BASE_COMMIT -- $env:PRODUCTION_PATH
           if ($LASTEXITCODE -ne 0) { throw 'Could not restore the production baseline.' }
           git diff -- $env:PRODUCTION_PATH | Out-File "$env:VALIDATION_ROOT\red-production.diff"
-          & .\build.cmd -ci -projects 'src/test/unit/.NET Framework/UnsupportedTypes/UnsupportedTypes.csproj' -configuration Debug /p:TargetArchitecture=x64 "/bl:$env:VALIDATION_ROOT\test-assets-build.binlog" 2>&1 |
+          & .\build.cmd -ci -projects 'src/test/unit/.NET*/UnsupportedTypes/UnsupportedTypes.csproj' -configuration Debug /p:TargetArchitecture=x64 "/bl:$env:VALIDATION_ROOT\test-assets-build.binlog" 2>&1 |
             Tee-Object -FilePath "$env:VALIDATION_ROOT\test-assets-build.log" | Out-Host
           $assetBuildExit = $LASTEXITCODE
           Set-Content "$env:VALIDATION_ROOT\test-assets-build-exit.txt" $assetBuildExit
