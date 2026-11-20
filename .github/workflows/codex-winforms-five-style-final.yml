@@ -1,0 +1,90 @@
+name: Validate final style ownership
+
+on:
+  push:
+    branches:
+      - validation/winforms-five-style-final-nov20
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: ${{ matrix.fix }}
+    runs-on: windows-2025-vs2026
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        fix:
+          - style-ownership
+    defaults:
+      run:
+        shell: pwsh
+    env:
+      FIX_ID: ${{ matrix.fix }}
+      DOTNET_ROOT: ${{ github.workspace }}\.dotnet
+      DOTNET_ROOT_X64: ${{ github.workspace }}\.dotnet
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      TESTINGPLATFORM_TELEMETRY_OPTOUT: 1
+      GCM_INTERACTIVE: Never
+
+    steps:
+      - name: Configure Git before checkout
+        run: |
+          git config --global core.autocrlf false
+          if ($LASTEXITCODE -ne 0) { throw 'Could not configure Git line endings.' }
+          git config --global core.eol lf
+          if ($LASTEXITCODE -ne 0) { throw 'Could not configure Git LF checkout.' }
+          git config --global core.longpaths true
+          if ($LASTEXITCODE -ne 0) { throw 'Could not configure Git long paths.' }
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Preserve validation helpers and verify clean fix
+        run: |
+          if ($env:GITHUB_REF -cne 'refs/heads/validation/winforms-five-style-final-nov20') {
+            throw 'This workflow is restricted to its isolated validation branch.'
+          }
+          $helperRoot = Join-Path $env:RUNNER_TEMP ('winforms-five-' + $env:FIX_ID)
+          New-Item -ItemType Directory -Path $helperRoot -Force | Out-Null
+          Copy-Item -LiteralPath '.validation/winforms-five.json' -Destination (Join-Path $helperRoot 'manifest.json')
+          Copy-Item -LiteralPath '.validation/Run-WinFormsFix.ps1' -Destination (Join-Path $helperRoot 'Run-WinFormsFix.ps1')
+          $script = Join-Path $helperRoot 'Run-WinFormsFix.ps1'
+          $manifest = Join-Path $helperRoot 'manifest.json'
+          "VALIDATION_SCRIPT=$script" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          "VALIDATION_MANIFEST=$manifest" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          & $script -ManifestPath $manifest -FixId $env:FIX_ID -Phase Prepare
+
+      - name: Build original test project against baseline production
+        run: |
+          & $env:VALIDATION_SCRIPT -ManifestPath $env:VALIDATION_MANIFEST -FixId $env:FIX_ID -Phase BuildBaseline
+
+      - name: Verify all selected regression cases fail on baseline
+        run: |
+          & $env:VALIDATION_SCRIPT -ManifestPath $env:VALIDATION_MANIFEST -FixId $env:FIX_ID -Phase Red
+
+      - name: Restore fix and rebuild original test project
+        run: |
+          & $env:VALIDATION_SCRIPT -ManifestPath $env:VALIDATION_MANIFEST -FixId $env:FIX_ID -Phase BuildPatched
+
+      - name: Verify selected related tests pass
+        run: |
+          & $env:VALIDATION_SCRIPT -ManifestPath $env:VALIDATION_MANIFEST -FixId $env:FIX_ID -Phase Green
+
+      - name: Upload build logs and test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: winforms-five-${{ matrix.fix }}-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            validation-results/${{ matrix.fix }}/**
+            artifacts/log/**/*.binlog
+            artifacts/log/**/*.log
+            artifacts/TestResults/**
