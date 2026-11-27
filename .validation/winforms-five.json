@@ -1,0 +1,53 @@
+{
+  "base": "d7f39b119ab503c1b1923bdc09d0c7fd2b38d284",
+  "fixes": [
+    {
+      "id": "image-list-batch-notifications",
+      "title": "Restore ImageList change notifications after AddRange fails",
+      "issue": null,
+      "description": "A failed AddRange leaves the batch flag set. Subsequent successful additions silently stop notifying controls that depend on the ImageList.",
+      "base": "d7f39b119ab503c1b1923bdc09d0c7fd2b38d284",
+      "head": "7051b935a88ed001d48d2fa7415a5e72f332856c",
+      "branch": "fix/winforms-image-list-batch-notifications-nov27",
+      "files": [
+        {
+          "path": "src/System.Windows.Forms/System/Windows/Forms/Components/ImageList/ImageList.ImageCollection.cs",
+          "role": "production",
+          "blob": "a54f9b5f7e87c0919956cbdcc9ffd3817e4968cc",
+          "baseBlob": "dda3198be8f4ab6c202e8fa155c76c4fc7b88406",
+          "sha256": "D27DA24F8D4AC9D65D64B45A5A559CBC3FBF2F9DB9D6C4991AD6380004C72911",
+          "additions": 9,
+          "deletions": 3
+        },
+        {
+          "path": "src/test/unit/System.Windows.Forms/System/Windows/Forms/ImageList.ImageCollectionTests.cs",
+          "role": "test",
+          "blob": "5d57e9b9e949e2513b7d7b636f49f212cc391df2",
+          "baseBlob": "a202ce39df77a4d406a2b4aefadf18af4a54629c",
+          "sha256": "5E1DD5425FA6B7EF2509987BCD68660B5F3F6F3C516C4F3ACD2FE5F62A13B896",
+          "additions": 25,
+          "deletions": 0
+        }
+      ],
+      "productionFiles": [
+        "src/System.Windows.Forms/System/Windows/Forms/Components/ImageList/ImageList.ImageCollection.cs"
+      ],
+      "testFiles": [
+        "src/test/unit/System.Windows.Forms/System/Windows/Forms/ImageList.ImageCollectionTests.cs"
+      ],
+      "redMethods": [
+        "System.Windows.Forms.Tests.ImageCollectionTests.ImageCollection_AddRange_Throws_LaterAddNotifies"
+      ],
+      "redExpected": {
+        "executed": 2,
+        "failed": 2
+      },
+      "greenFilters": [
+        "--filter-method",
+        "System.Windows.Forms.Tests.ImageCollectionTests.ImageCollection_AddRange_*"
+      ],
+      "greenExpectedExecuted": null,
+      "greenMinimum": 5
+    }
+  ]
+}

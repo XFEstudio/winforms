@@ -373,18 +373,12 @@ public sealed partial class ImageList
             ArgumentNullException.ThrowIfNull(images);
 
             _isBatchAdd = true;
-            try
+            foreach (Image image in images)
             {
-                foreach (Image image in images)
-                {
-                    Add(image);
-                }
-            }
-            finally
-            {
-                _isBatchAdd = false;
+                Add(image);
             }
 
+            _isBatchAdd = false;
             _owner.OnChangeHandle(EventArgs.Empty);
         }
 
