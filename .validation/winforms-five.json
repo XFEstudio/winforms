@@ -1,0 +1,102 @@
+{
+  "base": "d7f39b119ab503c1b1923bdc09d0c7fd2b38d284",
+  "fixes": [
+    {
+      "id": "flow-layout-hidden-prefix",
+      "title": "Constrain the first visible control in a flow row",
+      "issue": null,
+      "description": "A hidden first child prevents the row's first visible AutoSize child from receiving the width constraint. Preferred size and actual layout then overflow compared with the same visible controls alone. Detect the first participating child using the existing per-row count.",
+      "base": "d7f39b119ab503c1b1923bdc09d0c7fd2b38d284",
+      "head": "af37011f1ec466ce5c282cc9192b0c4a9fcb4884",
+      "branch": "fix/winforms-flow-layout-hidden-prefix-nov27",
+      "files": [
+        {
+          "path": "src/System.Windows.Forms/System/Windows/Forms/Layout/FlowLayout.cs",
+          "role": "production",
+          "blob": "c2b623bd07719cd424d1cf2a60188acd24efff1f",
+          "baseBlob": "74a8f2c10a4782e60f00275e975094cafd3f45b8",
+          "sha256": "9B569E251EB1B4F363EBEF5BBFAEA6550D39977FEAFA7FF719BCF8706176E4FB",
+          "additions": 1,
+          "deletions": 1
+        },
+        {
+          "path": "src/test/unit/System.Windows.Forms/System/Windows/Forms/FlowLayoutPanelTests.cs",
+          "role": "test",
+          "blob": "ba120a07afc2761e70c1fa2fa23f80e073cec47a",
+          "baseBlob": "b8267dc787dacc68df1e72436880eeacc5294f35",
+          "sha256": "E57A87FA9ADF589F7F31D7EDE3D58CACE49B82A728D96EF8D314D594B4C35125",
+          "additions": 21,
+          "deletions": 0
+        }
+      ],
+      "productionFiles": [
+        "src/System.Windows.Forms/System/Windows/Forms/Layout/FlowLayout.cs"
+      ],
+      "testFiles": [
+        "src/test/unit/System.Windows.Forms/System/Windows/Forms/FlowLayoutPanelTests.cs"
+      ],
+      "redMethods": [
+        "System.Windows.Forms.Tests.FlowLayoutPanelTests.FlowLayoutPanel_GetPreferredSize_FirstVisibleAutoSizeControlUsesWidthConstraint"
+      ],
+      "redExpected": {
+        "failed": 1,
+        "executed": 1
+      },
+      "greenFilters": [
+        "--filter-class",
+        "System.Windows.Forms.Tests.FlowLayoutPanelTests"
+      ],
+      "greenExpectedExecuted": null,
+      "greenMinimum": 1
+    },
+    {
+      "id": "toolstrip-content-buffer",
+      "title": "Restore ToolStripContentPanel buffering after renderer switches",
+      "issue": null,
+      "description": "Switching between two professional renderers overwrites the saved double-buffer setting with the temporarily enabled setting. Changing to a system renderer then leaves buffering enabled.",
+      "base": "d7f39b119ab503c1b1923bdc09d0c7fd2b38d284",
+      "head": "cdb54c27e46036da36fb02b79019b1a41df54d85",
+      "branch": "fix/winforms-toolstrip-content-buffer-nov27",
+      "files": [
+        {
+          "path": "src/System.Windows.Forms/System/Windows/Forms/Controls/ToolStrips/ToolStripContentPanel.cs",
+          "role": "production",
+          "blob": "584531386ea0cc771d1c7f12f7842211b4243c44",
+          "baseBlob": "7dfd2c7aee4d34fe74e6cd2edf99c6cb78b9f238",
+          "sha256": "62B47580658BF7C2D82FBEAE9CE5A32FDE88CC7E87E75247B5D7ADC787EDEA9C",
+          "additions": 8,
+          "deletions": 3
+        },
+        {
+          "path": "src/test/unit/System.Windows.Forms/System/Windows/Forms/ToolStripContentPanelTests.cs",
+          "role": "test",
+          "blob": "cc16949b98ebba0771843877753f36e159d2342a",
+          "baseBlob": "ebcd68b8efccc51de678f2ab74e220df1a2582f2",
+          "sha256": "EAF34BE7634F9663DEAAB39F3C5FAB424C9CEC201762666346504A755DCED496",
+          "additions": 23,
+          "deletions": 0
+        }
+      ],
+      "productionFiles": [
+        "src/System.Windows.Forms/System/Windows/Forms/Controls/ToolStrips/ToolStripContentPanel.cs"
+      ],
+      "testFiles": [
+        "src/test/unit/System.Windows.Forms/System/Windows/Forms/ToolStripContentPanelTests.cs"
+      ],
+      "redMethods": [
+        "System.Windows.Forms.Tests.ToolStripContentPanelTests.ToolStripContentPanel_Renderer_SwitchBetweenProfessionalRenderers_RestoresDoubleBuffering"
+      ],
+      "redExpected": {
+        "executed": 1,
+        "failed": 1
+      },
+      "greenFilters": [
+        "--filter-method",
+        "System.Windows.Forms.Tests.ToolStripContentPanelTests.ToolStripContentPanel_Renderer_*",
+        "System.Windows.Forms.Tests.ToolStripContentPanelTests.ToolStripContentPanel_OnRendererChanged_*"
+      ],
+      "greenExpectedExecuted": null,
+      "greenMinimum": 20
+    }
+  ]
+}

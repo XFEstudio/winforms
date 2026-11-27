@@ -419,27 +419,6 @@ public class FlowLayoutPanelTests
         Assert.Throws<ArgumentNullException>("control", () => control.SetFlowBreak(null, value));
     }
 
-    [WinFormsFact]
-    public void FlowLayoutPanel_GetPreferredSize_FirstVisibleAutoSizeControlUsesWidthConstraint()
-    {
-        using FlowLayoutPanel panel = new() { Size = new Size(100, 200) };
-        using Control hidden = new() { Visible = false };
-        using WidthConstrainedControl child = new() { AutoSize = true, Margin = Padding.Empty };
-        panel.Controls.Add(hidden);
-        panel.Controls.Add(child);
-
-        Assert.Equal(new Size(100, 40), panel.GetPreferredSize(new Size(100, 200)));
-        Assert.Equal(new Size(100, 40), child.Size);
-        Assert.False(panel.IsHandleCreated);
-        Assert.False(child.IsHandleCreated);
-    }
-
-    private sealed class WidthConstrainedControl : Control
-    {
-        public override Size GetPreferredSize(Size proposedSize) =>
-            proposedSize.Width < 200 ? new Size(proposedSize.Width, 40) : new Size(200, 20);
-    }
-
     private class SubFlowLayoutPanel : FlowLayoutPanel
     {
         public new const int ScrollStateAutoScrolling = ScrollableControl.ScrollStateAutoScrolling;
