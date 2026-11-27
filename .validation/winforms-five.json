@@ -1,0 +1,493 @@
+{
+  "base": "d7f39b119ab503c1b1923bdc09d0c7fd2b38d284",
+  "fixes": [
+    {
+      "id": "grid-combobox-self-add-range",
+      "title": "Support appending a DataGridView combo box item collection to itself",
+      "issue": null,
+      "description": null,
+      "base": "d7f39b119ab503c1b1923bdc09d0c7fd2b38d284",
+      "head": "7bb7512da4449275c32440a79c1409ce6d944290",
+      "branch": "fix/winforms-grid-combobox-self-add-range-nov27",
+      "files": [
+        {
+          "path": "src/System.Windows.Forms/System/Windows/Forms/Controls/DataGridView/DataGridViewComboBoxCell.ObjectCollection.cs",
+          "role": "production",
+          "blob": "386e1cff9152a5689ee5409df66d0bf45a0fe958",
+          "baseBlob": "c284d0449c3478e01763c5fac5c51470de6630b5",
+          "sha256": "9C97DE169E722018688146D7C36A3E7BD28269BDA545A146923262EBF1A7D806",
+          "additions": 2,
+          "deletions": 23
+        },
+        {
+          "path": "src/test/unit/System.Windows.Forms/System/Windows/Forms/DataGridViewComboBoxCell.ObjectCollectionTests.cs",
+          "role": "test",
+          "blob": "faf31572d43b688209cb4a18e183105577378732",
+          "baseBlob": "b4261b23b8e194ae81a9a23b4ace7a559638ae34",
+          "sha256": "42701A8E1DE2DC553751D570038B4A682ABB44C3508A85DD9F6EE3923748452B",
+          "additions": 20,
+          "deletions": 0
+        }
+      ],
+      "productionFiles": [
+        "src/System.Windows.Forms/System/Windows/Forms/Controls/DataGridView/DataGridViewComboBoxCell.ObjectCollection.cs"
+      ],
+      "testFiles": [
+        "src/test/unit/System.Windows.Forms/System/Windows/Forms/DataGridViewComboBoxCell.ObjectCollectionTests.cs"
+      ],
+      "redMethods": [
+        "System.Windows.Forms.Tests.DataGridViewComboBoxCell_ObjectCollectionTests.ObjectCollection_AddRange_Self_AppendsAllItems"
+      ],
+      "redExpected": {
+        "failed": 2,
+        "executed": 2
+      },
+      "greenFilters": [
+        "--filter-class",
+        "System.Windows.Forms.Tests.DataGridViewComboBoxCell_ObjectCollectionTests"
+      ],
+      "greenExpectedExecuted": null,
+      "greenMinimum": 2
+    },
+    {
+      "id": "listbox-integer-setter-3093",
+      "title": "Keep ListBox integer collections sorted and unique on replacement",
+      "issue": 3093,
+      "description": null,
+      "base": "d7f39b119ab503c1b1923bdc09d0c7fd2b38d284",
+      "head": "42b3e60c43425ac13d842e93bb7435057adf2a81",
+      "branch": "fix/winforms-listbox-integer-setter-3093-nov27",
+      "files": [
+        {
+          "path": "src/System.Windows.Forms/System/Windows/Forms/Controls/ListBoxes/ListBox.IntegerCollection.cs",
+          "role": "production",
+          "blob": "04e0ba8429853edffcbdec0ce7269e9b64035915",
+          "baseBlob": "932bc04760481d3c29f2eae42723c0bdb8b50baa",
+          "sha256": "AD56496150904817872D8544DEE42D35A1EF98BD02A9EC5B1AF7863EB180B6BD",
+          "additions": 2,
+          "deletions": 5
+        },
+        {
+          "path": "src/test/unit/System.Windows.Forms/System/Windows/Forms/ListBox.IntegerCollectionTests.cs",
+          "role": "test",
+          "blob": "b78424f8266eb4814ce4af604aa721dce088afa1",
+          "baseBlob": "b9e110f0fca06f5f87ad7e5ee4ec666b5964d627",
+          "sha256": "0DBD2624A7910E40BF309993F9D08C2EF64FB5F13C03262D70704E7D98FD1585",
+          "additions": 66,
+          "deletions": 44
+        }
+      ],
+      "productionFiles": [
+        "src/System.Windows.Forms/System/Windows/Forms/Controls/ListBoxes/ListBox.IntegerCollection.cs"
+      ],
+      "testFiles": [
+        "src/test/unit/System.Windows.Forms/System/Windows/Forms/ListBox.IntegerCollectionTests.cs"
+      ],
+      "redMethods": [
+        "System.Windows.Forms.Tests.ListBoxIntegerCollectionTests.ListBoxIntegerCollection_Item_Set_ReturnsExpected",
+        "System.Windows.Forms.Tests.ListBoxIntegerCollectionTests.ListBoxIntegerCollection_Item_SetCustomTabOffsets_ReturnsExpected",
+        "System.Windows.Forms.Tests.ListBoxIntegerCollectionTests.ListBoxIntegerCollection_Item_SetWithHandle_ReturnsExpected",
+        "System.Windows.Forms.Tests.ListBoxIntegerCollectionTests.ListBoxIntegerCollection_Item_SetCustomTabOffsetsWithHandle_ReturnsExpected",
+        "System.Windows.Forms.Tests.ListBoxIntegerCollectionTests.ListBoxIntegerCollection_IListItem_Set_ReturnsExpected",
+        "System.Windows.Forms.Tests.ListBoxIntegerCollectionTests.ListBoxIntegerCollection_IListItem_SetCustomTabOffsets_ReturnsExpected",
+        "System.Windows.Forms.Tests.ListBoxIntegerCollectionTests.ListBoxIntegerCollection_IListItem_SetWithHandle_ReturnsExpected",
+        "System.Windows.Forms.Tests.ListBoxIntegerCollectionTests.ListBoxIntegerCollection_IListItem_SetCustomTabOffsetsWithHandle_ReturnsExpected",
+        "System.Windows.Forms.Tests.ListBoxIntegerCollectionTests.ListBoxIntegerCollection_Item_SetExistingValue_DoesNotDuplicate"
+      ],
+      "redExpected": {
+        "failed": 10,
+        "executed": 10
+      },
+      "greenFilters": [
+        "--filter-class",
+        "System.Windows.Forms.Tests.ListBoxIntegerCollectionTests"
+      ],
+      "greenExpectedExecuted": 221,
+      "greenMinimum": 10
+    },
+    {
+      "id": "listview-subitem-self-assignment",
+      "title": "Keep ListView subitems attached when assigned to their current slot",
+      "issue": null,
+      "description": null,
+      "base": "d7f39b119ab503c1b1923bdc09d0c7fd2b38d284",
+      "head": "0aa5be596a421ac683d1028c76205df99ee9306d",
+      "branch": "fix/winforms-listview-subitem-self-assignment-nov27",
+      "files": [
+        {
+          "path": "src/System.Windows.Forms/System/Windows/Forms/Controls/ListView/ListViewItem.ListViewSubItemCollection.cs",
+          "role": "production",
+          "blob": "e45ef966eb6a87a5130450502309def72923ad06",
+          "baseBlob": "ee93bf692a03dbdd948d135fe057ae7d9f2c0810",
+          "sha256": "B8FA8CC2DCF764B1ED9931B5D73D8CBB386587361599AD20636E685827BC6B4C",
+          "additions": 5,
+          "deletions": 2
+        },
+        {
+          "path": "src/test/unit/System.Windows.Forms/System/Windows/Forms/ListViewSubItemCollectionTests.cs",
+          "role": "test",
+          "blob": "eb2104f5938beb8851d5346f9c92fe5f1f3d0b9e",
+          "baseBlob": "7d7d084cd3ef786ce7e64244ac0eae6e5c9ea5bd",
+          "sha256": "CA3EA9718090F6C9BD6C9B005F5B319B2C97F9A42010C86C138FBD2F915AD173",
+          "additions": 22,
+          "deletions": 0
+        }
+      ],
+      "productionFiles": [
+        "src/System.Windows.Forms/System/Windows/Forms/Controls/ListView/ListViewItem.ListViewSubItemCollection.cs"
+      ],
+      "testFiles": [
+        "src/test/unit/System.Windows.Forms/System/Windows/Forms/ListViewSubItemCollectionTests.cs"
+      ],
+      "redMethods": [
+        "System.Windows.Forms.Tests.ListViewSubItemCollectionTests.ListViewSubItemCollection_Item_SetSameSubItem_PreservesOwner"
+      ],
+      "redExpected": {
+        "failed": 2,
+        "executed": 2
+      },
+      "greenFilters": [
+        "--filter-class",
+        "System.Windows.Forms.Tests.ListViewSubItemCollectionTests"
+      ],
+      "greenExpectedExecuted": null,
+      "greenMinimum": 2
+    },
+    {
+      "id": "table-cell-culture",
+      "title": "Respect the culture separator when formatting table cell positions",
+      "issue": null,
+      "description": "With fr-FR, the TableLayoutPanelCellPosition converter formats '2,3' but its parser requires ';', breaking its own round trip. Use the same culture and separator for conversion to a string, preserving invariant comma syntax.",
+      "base": "d7f39b119ab503c1b1923bdc09d0c7fd2b38d284",
+      "head": "24905f41775eeeb679ef570d7b5c3a8e179ceeb2",
+      "branch": "fix/winforms-table-cell-culture-nov27",
+      "files": [
+        {
+          "path": "src/System.Windows.Forms/System/Windows/Forms/Panels/TableLayoutPanel/TableLayoutPanelCellPositionTypeConverter.cs",
+          "role": "production",
+          "blob": "29826848c7f96149f9663c20bbf264417ca600b6",
+          "baseBlob": "0f7140879914ecc0490851f96a2682d8b55a4627",
+          "sha256": "20AF04E38082C7A36433B75B14CFA577A7F496C2F14EB40FB6A65101BCC8F789",
+          "additions": 7,
+          "deletions": 0
+        },
+        {
+          "path": "src/test/unit/System.Windows.Forms/System/Windows/Forms/TableLayoutPanelCellPositionTests.cs",
+          "role": "test",
+          "blob": "16cc1afe8834d7560c3d71766427a4536696696e",
+          "baseBlob": "4cf63ef249ef9bcef3be82016f9355991c4172c9",
+          "sha256": "06B680942EC47F73D374D011B4C2F25FED425FC6EFA181A9351EA06C2405EA30",
+          "additions": 15,
+          "deletions": 0
+        }
+      ],
+      "productionFiles": [
+        "src/System.Windows.Forms/System/Windows/Forms/Panels/TableLayoutPanel/TableLayoutPanelCellPositionTypeConverter.cs"
+      ],
+      "testFiles": [
+        "src/test/unit/System.Windows.Forms/System/Windows/Forms/TableLayoutPanelCellPositionTests.cs"
+      ],
+      "redMethods": [
+        "System.Windows.Forms.Tests.TableLayoutPanelCellPositionTests.TableLayoutPanelCellPosition_ConverterRoundTrip_UsesSpecifiedListSeparator"
+      ],
+      "redExpected": {
+        "failed": 1,
+        "executed": 1
+      },
+      "greenFilters": [
+        "--filter-class",
+        "System.Windows.Forms.Tests.TableLayoutPanelCellPositionTests"
+      ],
+      "greenExpectedExecuted": null,
+      "greenMinimum": 1
+    },
+    {
+      "id": "splitter-distance-overflow",
+      "title": "Avoid overflow when clamping SplitContainer.SplitterDistance",
+      "issue": null,
+      "description": "Setting SplitterDistance to int.MaxValue wraps distance plus separator thickness, bypasses the maximum clamp, and gives Panel2 a negative width or height. Widen only the upper-bound comparison for both orientations.",
+      "base": "d7f39b119ab503c1b1923bdc09d0c7fd2b38d284",
+      "head": "a122cb906768e0fed44ecfea1aff47011f927c04",
+      "branch": "fix/winforms-splitter-distance-overflow-nov27",
+      "files": [
+        {
+          "path": "src/System.Windows.Forms/System/Windows/Forms/Layout/Containers/SplitContainer.cs",
+          "role": "production",
+          "blob": "a2a37a03509a69ab8cc6495a2e33009eb066ed09",
+          "baseBlob": "5fca905c8d4916389d32e63d8fcf37aefee27ac8",
+          "sha256": "1111A3A29AFBAA7ABA49F2697272B1CD1E31B01B384BB1A585F368C31953BC25",
+          "additions": 2,
+          "deletions": 2
+        },
+        {
+          "path": "src/test/unit/System.Windows.Forms/System/Windows/Forms/SplitContainerTests.cs",
+          "role": "test",
+          "blob": "d6d2387efb2febb860764ab4aea2401a53e83610",
+          "baseBlob": null,
+          "sha256": "0E293224413C6165A415E77B79DE22CA736CED05E46B5B5641AE078197F84A08",
+          "additions": 27,
+          "deletions": 0
+        }
+      ],
+      "productionFiles": [
+        "src/System.Windows.Forms/System/Windows/Forms/Layout/Containers/SplitContainer.cs"
+      ],
+      "testFiles": [
+        "src/test/unit/System.Windows.Forms/System/Windows/Forms/SplitContainerTests.cs"
+      ],
+      "redMethods": [
+        "System.Windows.Forms.Tests.SplitContainerTests.SplitContainer_SplitterDistance_MaxValue_ClampsToAvailableSpace"
+      ],
+      "redExpected": {
+        "failed": 2,
+        "executed": 2
+      },
+      "greenFilters": [
+        "--filter-class",
+        "System.Windows.Forms.Tests.SplitContainerTests"
+      ],
+      "greenExpectedExecuted": 2,
+      "greenMinimum": 2
+    },
+    {
+      "id": "table-settings-exponent",
+      "title": "Round-trip table layout style sizes in scientific notation",
+      "issue": null,
+      "description": "Finite single-precision values accepted by RowStyle and ColumnStyle can serialize in scientific notation. The XML reader mistakes E for the next style name and throws. Write locale-independent style sizes and recognize the scientific exponent while preserving prior decimal point/comma support.",
+      "base": "d7f39b119ab503c1b1923bdc09d0c7fd2b38d284",
+      "head": "2357651f382d311b4ea4dc9ac21848160a90d193",
+      "branch": "fix/winforms-table-settings-exponent-nov27",
+      "files": [
+        {
+          "path": "src/System.Windows.Forms/System/Windows/Forms/Panels/TableLayoutPanel/TableLayoutSettingsTypeConverter.cs",
+          "role": "production",
+          "blob": "03710db9337fe846da5a930289af21c10e65e670",
+          "baseBlob": "9df984039b716d2488c067de47a843b0202079c0",
+          "sha256": "F43C3BDFF2644483B58EF96FA8597E37B4BA00BAF8E89E2A4665CAD7616A0146",
+          "additions": 24,
+          "deletions": 3
+        },
+        {
+          "path": "src/test/unit/System.Windows.Forms/System/Windows/Forms/Layout/TableLayoutSettingsTypeConverterTests.cs",
+          "role": "test",
+          "blob": "5b17a4b73b08179b1d5bdb6665eca883f5e5d81f",
+          "baseBlob": "d07b1b899e12e3f44bd7f4a4009e8208059f9e0e",
+          "sha256": "907869FC16C701F6367BAECC31196761F4488A496DB541D78002A34900C75911",
+          "additions": 27,
+          "deletions": 0
+        }
+      ],
+      "productionFiles": [
+        "src/System.Windows.Forms/System/Windows/Forms/Panels/TableLayoutPanel/TableLayoutSettingsTypeConverter.cs"
+      ],
+      "testFiles": [
+        "src/test/unit/System.Windows.Forms/System/Windows/Forms/Layout/TableLayoutSettingsTypeConverterTests.cs"
+      ],
+      "redMethods": [
+        "System.Windows.Forms.Layout.Tests.TableLayoutSettingsTypeConverterTests.TableLayoutSettingsTypeConverter_RoundTrip_ScientificNotationPreservesStyles"
+      ],
+      "redExpected": {
+        "failed": 2,
+        "executed": 2
+      },
+      "greenFilters": [
+        "--filter-class",
+        "System.Windows.Forms.Layout.Tests.TableLayoutSettingsTypeConverterTests"
+      ],
+      "greenExpectedExecuted": null,
+      "greenMinimum": 2
+    },
+    {
+      "id": "help-provider-reset",
+      "title": "Unbind HelpProvider events when resetting ShowHelp",
+      "issue": null,
+      "description": "ResetShowHelp removes the flag but leaves the accessibility event handler attached. AccessibilityObject.Help still returns the disabled provider's text.",
+      "base": "d7f39b119ab503c1b1923bdc09d0c7fd2b38d284",
+      "head": "fa7cfc892c7bf266549c281a75dcf85d0625085b",
+      "branch": "fix/winforms-help-provider-reset-nov27",
+      "files": [
+        {
+          "path": "src/System.Windows.Forms/System/Windows/Forms/Components/HelpProvider.cs",
+          "role": "production",
+          "blob": "2dc01264cacdfdb561e9c3f2de80e5dac3edc7dd",
+          "baseBlob": "190412f5b1bb33342d39df80923037d743605519",
+          "sha256": "64D86718A1F8CECCCE53A53CAE35C7D39A591D5431468CF73E07572106CED0AA",
+          "additions": 1,
+          "deletions": 0
+        },
+        {
+          "path": "src/test/unit/System.Windows.Forms/System/Windows/Forms/HelpProviderTests.cs",
+          "role": "test",
+          "blob": "7bc798fd824b336202e8f7ad1a4db75eece2dbff",
+          "baseBlob": "ecba2d3b35c7cc82325824d0534492d7a590be43",
+          "sha256": "03B9220748E244903A0EA544A60C45A2005714F109875FD41B6BCD8D10B8F4F4",
+          "additions": 19,
+          "deletions": 0
+        }
+      ],
+      "productionFiles": [
+        "src/System.Windows.Forms/System/Windows/Forms/Components/HelpProvider.cs"
+      ],
+      "testFiles": [
+        "src/test/unit/System.Windows.Forms/System/Windows/Forms/HelpProviderTests.cs"
+      ],
+      "redMethods": [
+        "System.Windows.Forms.Tests.HelpProviderTests.HelpProvider_ResetShowHelp_RemovesAccessibilityHelp"
+      ],
+      "redExpected": {
+        "executed": 1,
+        "failed": 1
+      },
+      "greenFilters": [
+        "--filter-class",
+        "System.Windows.Forms.Tests.HelpProviderTests"
+      ],
+      "greenExpectedExecuted": null,
+      "greenMinimum": 1
+    },
+    {
+      "id": "image-list-batch-notifications",
+      "title": "Restore ImageList change notifications after AddRange fails",
+      "issue": null,
+      "description": "A failed AddRange leaves the batch flag set. Subsequent successful additions silently stop notifying controls that depend on the ImageList.",
+      "base": "d7f39b119ab503c1b1923bdc09d0c7fd2b38d284",
+      "head": "703ece5c5638ec027db78d73f18cdca193d43fcd",
+      "branch": "fix/winforms-image-list-batch-notifications-nov27",
+      "files": [
+        {
+          "path": "src/System.Windows.Forms/System/Windows/Forms/Components/ImageList/ImageList.ImageCollection.cs",
+          "role": "production",
+          "blob": "a54f9b5f7e87c0919956cbdcc9ffd3817e4968cc",
+          "baseBlob": "dda3198be8f4ab6c202e8fa155c76c4fc7b88406",
+          "sha256": "D27DA24F8D4AC9D65D64B45A5A559CBC3FBF2F9DB9D6C4991AD6380004C72911",
+          "additions": 9,
+          "deletions": 3
+        },
+        {
+          "path": "src/test/unit/System.Windows.Forms/System/Windows/Forms/ImageList.ImageCollectionTests.cs",
+          "role": "test",
+          "blob": "877ca7ab8cc2ee5020bf7ad89a504db2549d369d",
+          "baseBlob": "a202ce39df77a4d406a2b4aefadf18af4a54629c",
+          "sha256": "7E1E7EECF8308DDB28FCC42A0ED08521D390F06F62217F924FB829E82DD41454",
+          "additions": 24,
+          "deletions": 0
+        }
+      ],
+      "productionFiles": [
+        "src/System.Windows.Forms/System/Windows/Forms/Components/ImageList/ImageList.ImageCollection.cs"
+      ],
+      "testFiles": [
+        "src/test/unit/System.Windows.Forms/System/Windows/Forms/ImageList.ImageCollectionTests.cs"
+      ],
+      "redMethods": [
+        "System.Windows.Forms.Tests.ImageCollectionTests.ImageCollection_AddRange_Throws_LaterAddNotifies"
+      ],
+      "redExpected": {
+        "executed": 2,
+        "failed": 2
+      },
+      "greenFilters": [
+        "--filter-method",
+        "System.Windows.Forms.Tests.ImageCollectionTests.ImageCollection_AddRange_*"
+      ],
+      "greenExpectedExecuted": null,
+      "greenMinimum": 5
+    },
+    {
+      "id": "binding-source-null-first",
+      "title": "Handle a null first item in BindingSource enumerable data",
+      "issue": null,
+      "description": "BindingSource materializes non-IList enumerable sources using the runtime type of the first element. A null first element currently throws NullReferenceException instead of using an object list.",
+      "base": "d7f39b119ab503c1b1923bdc09d0c7fd2b38d284",
+      "head": "9f6c2d5b4bae33ee3ff80fb5c2933cb45af7f56c",
+      "branch": "fix/winforms-binding-source-null-first-nov27",
+      "files": [
+        {
+          "path": "src/System.Windows.Forms/System/Windows/Forms/DataBinding/BindingSource.cs",
+          "role": "production",
+          "blob": "79c6f4e5b5d133e526f78165c75d68c179f0e62b",
+          "baseBlob": "329040a3f707e4a3d1e78931a553ccd7a507661c",
+          "sha256": "0089E0E408CA5E6933B249C62BB8A18ECAE6A4AE188A64025F1492896FA8C825",
+          "additions": 2,
+          "deletions": 2
+        },
+        {
+          "path": "src/test/unit/System.Windows.Forms/System/Windows/Forms/BindingSourceTests.cs",
+          "role": "test",
+          "blob": "de93b9485ead47e005b68817a4ba4143a7ce272e",
+          "baseBlob": "8066dd07837761f70d8afba8f03dd3d61c35b4b0",
+          "sha256": "56CC10515204E9E1D49AF80677517FC534DD26011F5833282B0B309220A03640",
+          "additions": 27,
+          "deletions": 0
+        }
+      ],
+      "productionFiles": [
+        "src/System.Windows.Forms/System/Windows/Forms/DataBinding/BindingSource.cs"
+      ],
+      "testFiles": [
+        "src/test/unit/System.Windows.Forms/System/Windows/Forms/BindingSourceTests.cs"
+      ],
+      "redMethods": [
+        "System.Windows.Forms.Tests.BindingSourceTests.Ctor_EnumerableWithNullFirstItem_PreservesItems"
+      ],
+      "redExpected": {
+        "executed": 2,
+        "failed": 2
+      },
+      "greenFilters": [
+        "--filter-class",
+        "System.Windows.Forms.Tests.BindingSourceTests"
+      ],
+      "greenExpectedExecuted": null,
+      "greenMinimum": 2
+    },
+    {
+      "id": "padding-converter-culture",
+      "title": "Use the supplied culture for Padding numbers",
+      "issue": null,
+      "description": null,
+      "base": "d7f39b119ab503c1b1923bdc09d0c7fd2b38d284",
+      "head": "3043668df87fa662cf8afb1aa0b2034ad8ec3787",
+      "branch": "fix/winforms-padding-converter-culture-nov27",
+      "files": [
+        {
+          "path": "src/System.Windows.Forms.Primitives/src/System/Windows/Forms/PaddingConverter.cs",
+          "role": "production",
+          "blob": "4c470f400b51b62e06443bc0de23358ef698157e",
+          "baseBlob": "b487a5de914774c59866b2564cfd421cdff4670f",
+          "sha256": "933A90A7BC540063076EED38512714174024C3FF88CD4B2B200E027FCAA67352",
+          "additions": 2,
+          "deletions": 3
+        },
+        {
+          "path": "src/test/unit/System.Windows.Forms/System/Windows/Forms/PaddingConverterTests.cs",
+          "role": "test",
+          "blob": "be93a0197c8576f7c67950e2d6e1893641059d59",
+          "baseBlob": "60b50c083d941a2abf423f893d074fa1fe6cf891",
+          "sha256": "11241FC5438D56E176B02BAC7B39F9EC5488237E41F7D0E6DDA57F71D4ECB51A",
+          "additions": 16,
+          "deletions": 0
+        }
+      ],
+      "productionFiles": [
+        "src/System.Windows.Forms.Primitives/src/System/Windows/Forms/PaddingConverter.cs"
+      ],
+      "testFiles": [
+        "src/test/unit/System.Windows.Forms/System/Windows/Forms/PaddingConverterTests.cs"
+      ],
+      "redMethods": [
+        "System.Windows.Forms.Tests.PaddingConverterTests.PaddingConverter_ConvertTo_String_UsesSpecifiedCultureForNumbers"
+      ],
+      "redExpected": {
+        "failed": 1,
+        "executed": 1
+      },
+      "greenFilters": [
+        "--filter-class",
+        "System.Windows.Forms.Tests.PaddingConverterTests"
+      ],
+      "greenExpectedExecuted": null,
+      "greenMinimum": 1
+    }
+  ]
+}
