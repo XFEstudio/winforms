@@ -17,6 +17,7 @@ public class ToolStripContentPanel : Panel
     private ToolStripRendererSwitcher? _rendererSwitcher;
     private BitVector32 _state;
     private static readonly int s_stateLastDoubleBuffer = BitVector32.CreateMask();
+    private static readonly int s_stateProfessionalDoubleBuffer = BitVector32.CreateMask(s_stateLastDoubleBuffer);
 
     private static readonly object s_rendererChangedEvent = new();
     private static readonly object s_loadEvent = new();
@@ -330,13 +331,17 @@ public class ToolStripContentPanel : Panel
         // we don't want to be greedy.... if we're using TSProfessionalRenderer go DBuf, else don't.
         if (Renderer is ToolStripProfessionalRenderer)
         {
-            _state[s_stateLastDoubleBuffer] = DoubleBuffered;
-            // this.DoubleBuffered = true;
+            if (!_state[s_stateProfessionalDoubleBuffer])
+            {
+                _state[s_stateLastDoubleBuffer] = DoubleBuffered;
+                _state[s_stateProfessionalDoubleBuffer] = true;
+            }
+
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
         }
         else
         {
-            // restore DBuf
+            _state[s_stateProfessionalDoubleBuffer] = false;
             DoubleBuffered = _state[s_stateLastDoubleBuffer];
         }
 

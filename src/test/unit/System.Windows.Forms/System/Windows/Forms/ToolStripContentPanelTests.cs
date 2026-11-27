@@ -1126,6 +1126,29 @@ public class ToolStripContentPanelTests
         Assert.Equal(1, rendererChangedCallCount);
     }
 
+    [WinFormsFact]
+    public void ToolStripContentPanel_Renderer_SwitchBetweenProfessionalRenderers_RestoresDoubleBuffering()
+    {
+        using SubToolStripContentPanel control = new();
+        ToolStripSystemRenderer systemRenderer = new();
+        ToolStripProfessionalRenderer firstRenderer = new();
+        ToolStripProfessionalRenderer secondRenderer = new();
+        control.Renderer = systemRenderer;
+
+        foreach (bool doubleBuffered in new[] { false, true })
+        {
+            control.DoubleBuffered = doubleBuffered;
+            control.Renderer = firstRenderer;
+            Assert.True(control.DoubleBuffered);
+
+            control.Renderer = secondRenderer;
+            Assert.True(control.DoubleBuffered);
+
+            control.Renderer = systemRenderer;
+            Assert.Equal(doubleBuffered, control.DoubleBuffered);
+        }
+    }
+
     public static IEnumerable<object[]> Renderer_Set_TestData()
     {
         foreach (bool visible in new bool[] { true, false })
