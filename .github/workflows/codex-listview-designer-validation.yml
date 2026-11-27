@@ -1,0 +1,50 @@
+name: Verify ListViewDesigner action list initialization
+
+on:
+  push:
+    branches: [validation/winforms-listview-designer-a]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: ${{ matrix.arch }} ${{ matrix.configuration }}
+    runs-on: windows-2025-vs2026
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x64
+            configuration: Debug
+            rounds: 30
+          - arch: x64
+            configuration: Release
+            rounds: 20
+          - arch: x86
+            configuration: Debug
+            rounds: 20
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Configure Git
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+          git config --global core.longpaths true
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify baseline and repeat Designer tests on the fix
+        run: |
+          & ./.validation/Test-Designer.ps1 -Architecture ${{ matrix.arch }} -Configuration ${{ matrix.configuration }} -Rounds ${{ matrix.rounds }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: designer-${{ matrix.arch }}-${{ matrix.configuration }}
+          path: designer-results/
+          if-no-files-found: warn
+          retention-days: 14
