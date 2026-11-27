@@ -1,10 +1,10 @@
 {
-  "base": "74c34c0972f7b5b0a761da6a0069f00d90fe9c6f",
+  "base": "94d534e87b567459b549be339810c197db590490",
   "fixes": [
     {
       "id": "style-ownership",
       "title": "Preserve table layout style ownership",
-      "head": "94d534e87b567459b549be339810c197db590490",
+      "head": "aa7a60056c2124af818be5ee5a19e42d8cf9561e",
       "branch": "fix/winforms-style-ownership-nov20",
       "productionFiles": [
         "src/System.Windows.Forms/System/Windows/Forms/Panels/TableLayoutPanel/TableLayoutStyleCollection.cs"
@@ -15,199 +15,28 @@
       "files": [
         {
           "path": "src/System.Windows.Forms/System/Windows/Forms/Panels/TableLayoutPanel/TableLayoutStyleCollection.cs",
-          "blob": "972e8e6105ac8ab20f7dc67ff7703ad101b903a4",
-          "sha256": "D3BC1A8966BFB1196B495B4AD9B52EA4981D478DBA99868D49219B49A353AF68"
+          "blob": "ec05401696ef8fd899436322aec12ebe082c9528",
+          "sha256": "F10632A168588DF68B638DFA48948B748BC67CAA33E2F2941386B7515D42D4BD"
         },
         {
           "path": "src/test/unit/System.Windows.Forms/System/Windows/Forms/TableLayoutStyleCollectionTests.cs",
-          "blob": "f5ec6e30a7dd7347c5758562e9d958090246d36f",
-          "sha256": "A07EAB1F7125F0B2A60A22DABB07A3255AFE045B5D8BAD759800B807D702A497"
+          "blob": "4935d59afac400171a8c87caa5b9d660cc192781",
+          "sha256": "DBD78D6F5B986ACF22C3156E5C1081F5D1599B49E59989E2B07A3FD1D8012F35"
         }
       ],
       "redMethods": [
-        "System.Windows.Forms.Tests.TableLayoutStyleCollectionTests.TableLayoutStyleCollection_Item_Replace_ReleasesPreviousStyle",
-        "System.Windows.Forms.Tests.TableLayoutStyleCollectionTests.TableLayoutStyleCollection_Insert_InvalidIndex_DoesNotTakeOwnership",
-        "System.Windows.Forms.Tests.TableLayoutStyleCollectionTests.TableLayoutStyleCollection_Item_InvalidIndex_DoesNotTakeOwnership"
+        "System.Windows.Forms.Tests.TableLayoutStyleCollectionTests.TableLayoutStyleCollection_Item_ReplaceDuplicate_ReleasesStyleAfterLastReplacement"
       ],
       "redExpected": {
-        "failed": 14,
-        "executed": 14
+        "failed": 2,
+        "executed": 2
       },
       "greenFilters": [
         "--filter-class",
         "System.Windows.Forms.Tests.TableLayoutStyleCollectionTests"
       ],
-      "greenMinimum": 41,
-      "greenExpectedExecuted": 41
-    },
-    {
-      "id": "scrollbar-overflow",
-      "title": "Avoid overflow when computing scroll changes",
-      "head": "68ee314c42de603ef6740ac5c87e9952ff155e3a",
-      "branch": "fix/winforms-scrollbar-overflow-nov20",
-      "productionFiles": [
-        "src/System.Windows.Forms/System/Windows/Forms/Scrolling/ScrollBar.cs",
-        "src/System.Windows.Forms/System/Windows/Forms/Scrolling/ScrollProperties.cs"
-      ],
-      "testFiles": [
-        "src/test/unit/System.Windows.Forms/System/Windows/Forms/ScrollBarTests.cs",
-        "src/test/unit/System.Windows.Forms/System/Windows/Forms/ScrollPropertiesTests.cs"
-      ],
-      "files": [
-        {
-          "path": "src/System.Windows.Forms/System/Windows/Forms/Scrolling/ScrollBar.cs",
-          "blob": "0836078aa326ce821ec27a5b5d732a53cde213fd",
-          "sha256": "E925B3940A2ED96733B45783C69A8C6DBAF48EACB6FF0F8D415D527DCE959628"
-        },
-        {
-          "path": "src/System.Windows.Forms/System/Windows/Forms/Scrolling/ScrollProperties.cs",
-          "blob": "3ac42f1abc6976da71e3755c5f3652e5ad315ea1",
-          "sha256": "DB4CA344D2C4C9AEBECD8C5A5F8591440438AD44B2DF90251DE238F05BD2A151"
-        },
-        {
-          "path": "src/test/unit/System.Windows.Forms/System/Windows/Forms/ScrollBarTests.cs",
-          "blob": "c50c0f2414f2ff3ae652d91b2c5f58c2e8a61aa9",
-          "sha256": "9C46F44C806859763A6E55C23794B6AD484E0A72D877D4B96AC464C47911E707"
-        },
-        {
-          "path": "src/test/unit/System.Windows.Forms/System/Windows/Forms/ScrollPropertiesTests.cs",
-          "blob": "095d3bcb4f2d50162ea9ec66e1e7b4628e0238bc",
-          "sha256": "682FA2A77164CC9B52B555F03AB73E648D6458BAC15E48D511BCD86BA58DCD10"
-        }
-      ],
-      "redMethods": [
-        "System.Windows.Forms.Tests.ScrollBarTests.ScrollBar_LargeChange_WideRange_DoesNotOverflow",
-        "System.Windows.Forms.Tests.ScrollBarTests.ScrollBar_LargeChange_WideRange_PreservesStoredValue",
-        "System.Windows.Forms.Tests.ScrollPropertiesTests.ScrollProperties_LargeChange_WideRange_PreservesStoredValue"
-      ],
-      "redExpected": {
-        "failed": 12,
-        "executed": 12
-      },
-      "greenFilters": [
-        "--filter-method",
-        "System.Windows.Forms.Tests.ScrollBarTests.ScrollBar_LargeChange_*",
-        "System.Windows.Forms.Tests.ScrollBarTests.ScrollBar_SmallChange_*",
-        "System.Windows.Forms.Tests.ScrollBarTests.ScrollBar_Maximum_*",
-        "System.Windows.Forms.Tests.ScrollBarTests.ScrollBar_Minimum_*",
-        "System.Windows.Forms.Tests.ScrollPropertiesTests.ScrollProperties_LargeChange_*",
-        "System.Windows.Forms.Tests.ScrollPropertiesTests.ScrollProperties_SmallChange_*",
-        "System.Windows.Forms.Tests.ScrollPropertiesTests.ScrollProperties_Maximum_*",
-        "System.Windows.Forms.Tests.ScrollPropertiesTests.ScrollProperties_Minimum_*"
-      ],
-      "greenMinimum": 36,
-      "greenExpectedExecuted": null
-    },
-    {
-      "id": "opacity-culture",
-      "title": "Respect culture when converting opacity",
-      "head": "0b5c05fd8ed97091b70ae9dd2e6f1f612126be6b",
-      "branch": "fix/winforms-opacity-culture-nov20",
-      "productionFiles": [
-        "src/System.Windows.Forms/System/Windows/Forms/Controls/ToolStrips/OpacityConverter.cs"
-      ],
-      "testFiles": [
-        "src/test/unit/System.Windows.Forms/System/Windows/Forms/OpacityConverterTests.cs"
-      ],
-      "files": [
-        {
-          "path": "src/System.Windows.Forms/System/Windows/Forms/Controls/ToolStrips/OpacityConverter.cs",
-          "blob": "0bbe720beed0299bf5da1dc0362017bd970a14a9",
-          "sha256": "CBAC4CA358FF721054F89452676C06D9F165F45B659E5EC27E08C6CE907B5B5C"
-        },
-        {
-          "path": "src/test/unit/System.Windows.Forms/System/Windows/Forms/OpacityConverterTests.cs",
-          "blob": "2f308c8c946bf7ef0c2324aa1f7fd9d112a5a699",
-          "sha256": "3AB517CD8DF5BF66A6C39580AAE1135D35AF9792405F259DF8EE43B6BBB7AA5A"
-        }
-      ],
-      "redMethods": [
-        "System.Windows.Forms.Tests.OpacityConverterTests.OpacityConverter_ConvertFrom_DifferentCurrentCulture_UsesSpecifiedCulture",
-        "System.Windows.Forms.Tests.OpacityConverterTests.OpacityConverter_ConvertFromInvariantString_DifferentCurrentCulture_UsesInvariantCulture"
-      ],
-      "redExpected": {
-        "failed": 7,
-        "executed": 7
-      },
-      "greenFilters": [
-        "--filter-class",
-        "System.Windows.Forms.Tests.OpacityConverterTests"
-      ],
-      "greenMinimum": 7,
-      "greenExpectedExecuted": null
-    },
-    {
-      "id": "toolstrip-insert",
-      "title": "Validate ToolStrip insertions before reparenting",
-      "head": "26f3dbe26781968d3c608bb4ebceaf79062bb3ab",
-      "branch": "fix/winforms-toolstrip-insert-nov20",
-      "productionFiles": [
-        "src/System.Windows.Forms/System/Windows/Forms/Controls/ToolStrips/ToolStripItemCollection.cs"
-      ],
-      "testFiles": [
-        "src/test/unit/System.Windows.Forms/System/Windows/Forms/ToolStripItemCollectionTests.cs"
-      ],
-      "files": [
-        {
-          "path": "src/System.Windows.Forms/System/Windows/Forms/Controls/ToolStrips/ToolStripItemCollection.cs",
-          "blob": "895ec780ba644a6a4d3ecc88dc4bd6434fe2f786",
-          "sha256": "1B1F34817600ABC0E307E09E6734D791F71B7192A2D3D5C2E88B0E9716B79A71"
-        },
-        {
-          "path": "src/test/unit/System.Windows.Forms/System/Windows/Forms/ToolStripItemCollectionTests.cs",
-          "blob": "863a5671533be2288b11fe048cf0a1352ffd5242",
-          "sha256": "A5B2BDB606A2897841533622FAB3D4A3AEA9BFF532ED0A41C602FA2764B0516F"
-        }
-      ],
-      "redMethods": [
-        "System.Windows.Forms.Tests.ToolStripItemCollectionTests.ToolStripItemCollection_Insert_InvalidIndex_PreservesOwner",
-        "System.Windows.Forms.Tests.ToolStripItemCollectionTests.ToolStripItemCollection_Insert_ExistingItemAtCount_MovesToEnd"
-      ],
-      "redExpected": {
-        "failed": 5,
-        "executed": 5
-      },
-      "greenFilters": [
-        "--filter-class",
-        "System.Windows.Forms.Tests.ToolStripItemCollectionTests"
-      ],
-      "greenMinimum": 5,
-      "greenExpectedExecuted": null
-    },
-    {
-      "id": "tree-add-range",
-      "title": "Validate TreeNode ranges before adding nodes",
-      "head": "8b163ce48757ceabdfb38f75c80d1e61e7d3ea6e",
-      "branch": "fix/winforms-tree-add-range-nov20",
-      "productionFiles": [
-        "src/System.Windows.Forms/System/Windows/Forms/Controls/TreeView/TreeNodeCollection.cs"
-      ],
-      "testFiles": [
-        "src/test/unit/System.Windows.Forms/System/Windows/Forms/TreeNodeCollectionTests.cs"
-      ],
-      "files": [
-        {
-          "path": "src/System.Windows.Forms/System/Windows/Forms/Controls/TreeView/TreeNodeCollection.cs",
-          "blob": "714d65cd82b7505a652db51057a915604eec6676",
-          "sha256": "F2CB5751665BF904E1ED300A0C028DDB447AFBE75299AF171BF3F779114A1079"
-        },
-        {
-          "path": "src/test/unit/System.Windows.Forms/System/Windows/Forms/TreeNodeCollectionTests.cs",
-          "blob": "22c3b19a0b074563010f04d3302bbb9ae76ddceb",
-          "sha256": "179DA2B2B26A7093D3AF189278A2052C1C20671FC3D12FB981A6CB8D94B0174B"
-        }
-      ],
-      "redMethods": "System.Windows.Forms.Tests.TreeNodeCollectionTests.TreeNodeCollection_AddRange_NullElement_PreservesCollection",
-      "redExpected": {
-        "failed": 3,
-        "executed": 3
-      },
-      "greenFilters": [
-        "--filter-class",
-        "System.Windows.Forms.Tests.TreeNodeCollectionTests"
-      ],
-      "greenMinimum": 3,
-      "greenExpectedExecuted": null
+      "greenMinimum": 43,
+      "greenExpectedExecuted": 43
     }
   ]
 }
