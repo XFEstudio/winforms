@@ -185,7 +185,7 @@ internal partial class FlowLayout : LayoutEngine
             if (elementProxy.AutoSize)
             {
                 Size elementConstraints = new(int.MaxValue, rowBounds.Height - elementProxy.Margin.Size.Height);
-                if (i == startIndex)
+                if (laidOutItems == 0)
                 {
                     // If the element is the first in the row, attempt to pack it to the row width. (If its not 1st, it will wrap
                     // to the first on the next row if its too long and then be packed if needed by the next call to TryCalculatePreferredSizeRow).
